@@ -7,21 +7,47 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2DB479F2CA716502B3DA0D61 /* Pods_AwsChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 939E1B8F69A60A8E611FF231 /* Pods_AwsChat.framework */; };
+		651B15B51D3258CF001A263B /* AWSChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651B15B41D3258CF001A263B /* AWSChatMessage.swift */; };
 		65446A311D3110A000B1F0BB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65446A301D3110A000B1F0BB /* AppDelegate.swift */; };
-		65446A331D3110A000B1F0BB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65446A321D3110A000B1F0BB /* ViewController.swift */; };
 		65446A361D3110A000B1F0BB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65446A341D3110A000B1F0BB /* Main.storyboard */; };
 		65446A381D3110A000B1F0BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65446A371D3110A000B1F0BB /* Assets.xcassets */; };
 		65446A3B1D3110A100B1F0BB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65446A391D3110A100B1F0BB /* LaunchScreen.storyboard */; };
+		657254F11D43074F0025587D /* AWSChatUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657254F01D43074F0025587D /* AWSChatUser.swift */; };
+		65BACCD61D31125D005DF3C8 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BACCD51D31125D005DF3C8 /* LoginViewController.swift */; };
+		65BACCD81D3114ED005DF3C8 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BACCD71D3114ED005DF3C8 /* ChatViewController.swift */; };
+		65BACCDC1D31276A005DF3C8 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65BACCD91D31276A005DF3C8 /* FBSDKCoreKit.framework */; };
+		65BACCDD1D31276A005DF3C8 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65BACCDA1D31276A005DF3C8 /* FBSDKLoginKit.framework */; };
+		65BACCDE1D31276A005DF3C8 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65BACCDB1D31276A005DF3C8 /* FBSDKShareKit.framework */; };
+		65ED0F281D5D5D3E00AB02EE /* LoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65ED0F271D5D5D3E00AB02EE /* LoginService.swift */; };
+		65ED0F2A1D5D9F5400AB02EE /* ChatRoomsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65ED0F291D5D9F5400AB02EE /* ChatRoomsService.swift */; };
+		65ED0F2C1D5DA0CF00AB02EE /* ChatRoomsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65ED0F2B1D5DA0CF00AB02EE /* ChatRoomsViewController.swift */; };
+		65ED0F2E1D5DA24300AB02EE /* AWSChatRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65ED0F2D1D5DA24300AB02EE /* AWSChatRoom.swift */; };
+		65ED0F301D5F75E200AB02EE /* ChatMessagesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65ED0F2F1D5F75E200AB02EE /* ChatMessagesService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3529A2373C3C9E13697C5C0E /* Pods-AwsChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AwsChat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AwsChat/Pods-AwsChat.debug.xcconfig"; sourceTree = "<group>"; };
+		651B15B41D3258CF001A263B /* AWSChatMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSChatMessage.swift; sourceTree = "<group>"; };
 		65446A2D1D3110A000B1F0BB /* AwsChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AwsChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		65446A301D3110A000B1F0BB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		65446A321D3110A000B1F0BB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		65446A351D3110A000B1F0BB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		65446A371D3110A000B1F0BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		65446A3A1D3110A100B1F0BB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		65446A3C1D3110A100B1F0BB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		657254F01D43074F0025587D /* AWSChatUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSChatUser.swift; sourceTree = "<group>"; };
+		65BACCD51D31125D005DF3C8 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		65BACCD71D3114ED005DF3C8 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		65BACCD91D31276A005DF3C8 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		65BACCDA1D31276A005DF3C8 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		65BACCDB1D31276A005DF3C8 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
+		65ED0F271D5D5D3E00AB02EE /* LoginService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginService.swift; sourceTree = "<group>"; };
+		65ED0F291D5D9F5400AB02EE /* ChatRoomsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatRoomsService.swift; sourceTree = "<group>"; };
+		65ED0F2B1D5DA0CF00AB02EE /* ChatRoomsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatRoomsViewController.swift; sourceTree = "<group>"; };
+		65ED0F2D1D5DA24300AB02EE /* AWSChatRoom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AWSChatRoom.swift; sourceTree = "<group>"; };
+		65ED0F2F1D5F75E200AB02EE /* ChatMessagesService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessagesService.swift; sourceTree = "<group>"; };
+		8964F51C290D6EE283003883 /* Pods-AwsChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AwsChat.release.xcconfig"; path = "Pods/Target Support Files/Pods-AwsChat/Pods-AwsChat.release.xcconfig"; sourceTree = "<group>"; };
+		939E1B8F69A60A8E611FF231 /* Pods_AwsChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AwsChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,17 +55,32 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65BACCDE1D31276A005DF3C8 /* FBSDKShareKit.framework in Frameworks */,
+				2DB479F2CA716502B3DA0D61 /* Pods_AwsChat.framework in Frameworks */,
+				65BACCDC1D31276A005DF3C8 /* FBSDKCoreKit.framework in Frameworks */,
+				65BACCDD1D31276A005DF3C8 /* FBSDKLoginKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		51EA3B83C5CE52F04AFCE0DA /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				3529A2373C3C9E13697C5C0E /* Pods-AwsChat.debug.xcconfig */,
+				8964F51C290D6EE283003883 /* Pods-AwsChat.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		65446A241D3110A000B1F0BB = {
 			isa = PBXGroup;
 			children = (
 				65446A2F1D3110A000B1F0BB /* AwsChat */,
 				65446A2E1D3110A000B1F0BB /* Products */,
+				51EA3B83C5CE52F04AFCE0DA /* Pods */,
+				AAE9ACD29B61B72B6A52F0A4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,14 +95,33 @@
 		65446A2F1D3110A000B1F0BB /* AwsChat */ = {
 			isa = PBXGroup;
 			children = (
+				65BACCD91D31276A005DF3C8 /* FBSDKCoreKit.framework */,
+				65BACCDA1D31276A005DF3C8 /* FBSDKLoginKit.framework */,
+				65BACCDB1D31276A005DF3C8 /* FBSDKShareKit.framework */,
 				65446A301D3110A000B1F0BB /* AppDelegate.swift */,
-				65446A321D3110A000B1F0BB /* ViewController.swift */,
+				65BACCD51D31125D005DF3C8 /* LoginViewController.swift */,
+				65ED0F2B1D5DA0CF00AB02EE /* ChatRoomsViewController.swift */,
+				65BACCD71D3114ED005DF3C8 /* ChatViewController.swift */,
+				651B15B41D3258CF001A263B /* AWSChatMessage.swift */,
+				657254F01D43074F0025587D /* AWSChatUser.swift */,
+				65ED0F2D1D5DA24300AB02EE /* AWSChatRoom.swift */,
+				65ED0F271D5D5D3E00AB02EE /* LoginService.swift */,
+				65ED0F291D5D9F5400AB02EE /* ChatRoomsService.swift */,
+				65ED0F2F1D5F75E200AB02EE /* ChatMessagesService.swift */,
 				65446A341D3110A000B1F0BB /* Main.storyboard */,
 				65446A371D3110A000B1F0BB /* Assets.xcassets */,
 				65446A391D3110A100B1F0BB /* LaunchScreen.storyboard */,
 				65446A3C1D3110A100B1F0BB /* Info.plist */,
 			);
 			path = AwsChat;
+			sourceTree = "<group>";
+		};
+		AAE9ACD29B61B72B6A52F0A4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				939E1B8F69A60A8E611FF231 /* Pods_AwsChat.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,9 +131,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 65446A3F1D3110A100B1F0BB /* Build configuration list for PBXNativeTarget "AwsChat" */;
 			buildPhases = (
+				A3A936F570344194902264FE /* [CP] Check Pods Manifest.lock */,
 				65446A291D3110A000B1F0BB /* Sources */,
 				65446A2A1D3110A000B1F0BB /* Frameworks */,
 				65446A2B1D3110A000B1F0BB /* Resources */,
+				081C2BA8F2BD9E5EAF4163EB /* [CP] Embed Pods Frameworks */,
+				5ABCBBAF9BA80B3A2F72A6B9 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -130,13 +193,69 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		081C2BA8F2BD9E5EAF4163EB /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AwsChat/Pods-AwsChat-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5ABCBBAF9BA80B3A2F72A6B9 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AwsChat/Pods-AwsChat-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A3A936F570344194902264FE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		65446A291D3110A000B1F0BB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65446A331D3110A000B1F0BB /* ViewController.swift in Sources */,
+				65BACCD61D31125D005DF3C8 /* LoginViewController.swift in Sources */,
+				651B15B51D3258CF001A263B /* AWSChatMessage.swift in Sources */,
+				65ED0F2C1D5DA0CF00AB02EE /* ChatRoomsViewController.swift in Sources */,
+				65BACCD81D3114ED005DF3C8 /* ChatViewController.swift in Sources */,
+				657254F11D43074F0025587D /* AWSChatUser.swift in Sources */,
 				65446A311D3110A000B1F0BB /* AppDelegate.swift in Sources */,
+				65ED0F301D5F75E200AB02EE /* ChatMessagesService.swift in Sources */,
+				65ED0F2E1D5DA24300AB02EE /* AWSChatRoom.swift in Sources */,
+				65ED0F2A1D5D9F5400AB02EE /* ChatRoomsService.swift in Sources */,
+				65ED0F281D5D5D3E00AB02EE /* LoginService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -202,6 +321,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "68f28607-3214-4b95-8a37-3250f5ebaedb";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -241,6 +361,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "68f28607-3214-4b95-8a37-3250f5ebaedb";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -249,8 +370,13 @@
 		};
 		65446A401D3110A100B1F0BB /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3529A2373C3C9E13697C5C0E /* Pods-AwsChat.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/AwsChat",
+				);
 				INFOPLIST_FILE = AwsChat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = jp.yosan.ios.AwsChat;
@@ -260,8 +386,13 @@
 		};
 		65446A411D3110A100B1F0BB /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8964F51C290D6EE283003883 /* Pods-AwsChat.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/AwsChat",
+				);
 				INFOPLIST_FILE = AwsChat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = jp.yosan.ios.AwsChat;
@@ -288,6 +419,7 @@
 				65446A411D3110A100B1F0BB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

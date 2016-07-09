@@ -43,5 +43,25 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>&lt;YOUR_FACEBOOK_URL_SCHEMES&gt;</string>
+			</array>
+		</dict>
+	</array>
+	<key>FacebookAppID</key>
+	<string>&lt;YOUR_FACEBOOK_APP_ID&gt;</string>
+	<key>FacebookDisplayName</key>
+	<string>AWSChat</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fb-messenger-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
+	</array>
 </dict>
 </plist>
