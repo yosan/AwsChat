@@ -26,13 +26,16 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     /// Device Token
     private var deviceToken: String?
     
+    /// Service for login
+    private let loginService = LoginService()
+    
     /// Container to show icon.
     @IBOutlet weak var iconContainer: UIView!
     
-    /// Start chat button
+    /// Start chat button. This button is enabled when user logins.
     @IBOutlet weak var startButton: UIButton!
     
-    /// Login Provider to pass FB credentials to AWS SDK
+    /// Login Provider to pass FB credentials to AWS SDK.
     class AWSChatLoginProvider: NSObject, AWSIdentityProviderManager {
         func logins() -> AWSTask {
             var providers = [String : String]()
@@ -46,11 +49,7 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     /// User
     private var user: AWSChatUser?
     
-    /**
-     viewDidLoad
-     
-     Setup views.
-     */
+    // MARK: - ViewController Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -74,7 +73,7 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     }
     
     /**
-     This function is called when login process completed
+     This function is called when login process completed.
      
      - parameter loginButton: button
      - parameter result:      result
@@ -85,7 +84,7 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     }
     
     /**
-     Move to chat rooms view controller
+     Move to chat rooms view controller.
      
      - parameter sender: sender
      */
@@ -117,6 +116,11 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
         chatRoomsVC.user = user
     }
     
+    /**
+     Called when device token is updated.
+     
+     - parameter notification: notification
+     */
     @objc
     func onDeviceTokenUpdated(notification: NSNotification?) {
         guard let userInfo = notification?.userInfo else { return }
@@ -127,12 +131,24 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     }
 }
 
+// MARK: - Private
 private extension LoginViewController {
     
+    /**
+     Try to login.
+     
+     Login process is started when facebook token and device token is received.
+     After login process is end, "Start" button is enabled.
+     
+     - parameter deviceToken: deviceToken
+     */
     func login(deviceToken: String?) {
+        // Chack facebook token and device token.
         guard
             let fbtoken =  FBSDKAccessToken.currentAccessToken(),
             let deviceToken = self.deviceToken else { return }
+        
+        // Get icon URL and start login process.
         FBSDKProfile.loadCurrentProfileWithCompletion { (profile, error) in
             guard error == nil else {
                 print(error)
@@ -140,8 +156,7 @@ private extension LoginViewController {
             }
             
             let imageUrl = profile.imageURLForPictureMode(FBSDKProfilePictureMode.Square, size: CGSize(width: 64, height: 64))
-            let loginService = LoginService()
-            loginService.login(fbtoken.tokenString, name: profile.name, imageUrl: imageUrl, deviceToken: deviceToken) { (user, error) in
+            self.loginService.login(fbtoken.tokenString, name: profile.name, imageUrl: imageUrl, deviceToken: deviceToken) { (user, error) in
                 self.user = user
                 self.startButton.enabled = true
             }

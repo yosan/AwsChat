@@ -10,64 +10,71 @@ import UIKit
 import JSQMessagesViewController
 import AWSDynamoDB
 
+/// Chat room view. This view is created by JSQMessagesViewController.
 class ChatViewController: JSQMessagesViewController {
 
-    /// main user
-    var user: AWSChatUser!
+    /// Main user
+    var user: AWSChatUser! {
+        didSet {
+            senderId = user.UserId as String
+            senderDisplayName = user.UserName as String
+        }
+    }
     
-    /// room
+    /// Room
     var room: AWSChatRoom!
 
-    /// messages
+    /// Messages
     private var messages = [AWSChatMessage]()
     
-    /// chatting users
+    /// Chatting users
     private var chattingUsers = [AWSChatUser]()
     
-    /// chatting user icons dictionary
+    /// Chatting user icons dictionary
     private var iconDictionary = [String : JSQMessagesAvatarImage]()
     
-    private let bubbleFactory = JSQMessagesBubbleImageFactory()
+    /// Bubble for not main users
     private var incomingBubble: JSQMessagesBubbleImage!
+    
+    /// Bubble (plate of messages) for main user
     private var outgoingBuggle: JSQMessagesBubbleImage!
+    
+    /// Default avator for not main users
     private var incomingAvator: JSQMessagesAvatarImage!
+    
+    /// Main user's avator
     private var outgoingAvator: JSQMessagesAvatarImage!
     
+    /// Service for message
     private let messagesService = ChatMessagesService()
     
+    // MARK: - ViewController Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        senderId = user.UserId as String
-        senderDisplayName = user.UserName as String
-        
+        // Initialize bubbles
+        let bubbleFactory = JSQMessagesBubbleImageFactory()
         incomingBubble = bubbleFactory.incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleBlueColor())
         outgoingBuggle = bubbleFactory.outgoingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleGreenColor())
+        
+        // Initialize avator
         incomingAvator = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(named: "IncomingAvatar"), diameter: 64)
         
+        // Fetch messages from server
         reloadMessages()
         
+        // Start observation MessageUpdated event
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.onPushNotificationReceived(_:)), name: "MessageUpdated", object: nil)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        // Stop observation
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
-        
-        JSQSystemSoundPlayer.jsq_playMessageSentAlert()
-        
-        messagesService.sendMessage(text: text, user: user, room: room) { (error) in
-            if let error = error {
-                print(error)
-            }
-            self.finishSendingMessageAnimated(true)
-            self.reloadMessages()
-        }
-    }
-    
+    // MARK: - JSQMessagesViewController
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
         let message = messages[indexPath.row]
         
@@ -101,10 +108,28 @@ class ChatViewController: JSQMessagesViewController {
             }
         }
     }
+    
+    // MARK: - Event Listener
+    override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
+        
+        JSQSystemSoundPlayer.jsq_playMessageSentAlert()
+        
+        messagesService.sendMessage(text: text, user: user, room: room) { (error) in
+            if let error = error {
+                print(error)
+            }
+            self.finishSendingMessageAnimated(true)
+            self.reloadMessages()
+        }
+    }
 }
 
+// MARK: - Privates
 private extension ChatViewController {
     
+    /**
+     Get new messages and reload view
+     */
     func reloadMessages() {
         // TODO: Need mutex
         
@@ -142,6 +167,14 @@ private extension ChatViewController {
         })
     }
     
+    /**
+     Get new users' IDs
+     
+     - parameter messages:   new message
+     - parameter knownUsers: already known user
+     
+     - returns: user IDs
+     */
     func getUnknownUserIds(messages messages: [AWSChatMessage], knownUsers: [AWSChatUser]) -> [String] {
         let knownUserIds = knownUsers.map { $0.UserId }
         let unknownUserIds = messages.reduce([]) { (acc, message) -> [String] in
@@ -155,6 +188,11 @@ private extension ChatViewController {
         return unknownUserIds
     }
     
+    /**
+     Called when push notification is received
+     
+     - parameter notification: notification
+     */
     @objc
     func onPushNotificationReceived(notification: NSNotification?) {
         reloadMessages()
