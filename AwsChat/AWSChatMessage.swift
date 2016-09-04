@@ -9,6 +9,7 @@
 import Foundation
 import AWSDynamoDB
 
+/// DynamoDB Object for AWSChatMessages
 class AWSChatMessage: AWSDynamoDBObjectModel, AWSDynamoDBModeling {
     
     var MessageId: NSString = ""

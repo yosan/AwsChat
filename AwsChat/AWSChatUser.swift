@@ -9,6 +9,7 @@
 import Foundation
 import AWSDynamoDB
 
+/// DynamoDB Object for AWSChatUsers
 class AWSChatUser: AWSDynamoDBObjectModel, AWSDynamoDBModeling {
     
     var UserId: NSString = ""

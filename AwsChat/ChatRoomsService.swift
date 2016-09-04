@@ -9,10 +9,18 @@
 import Foundation
 import AWSDynamoDB
 
+/// Service of chat rooms
 class ChatRoomsService {
     
+    /// Object Mapper
     private lazy var dynamoDBObjectMapper = AWSDynamoDBObjectMapper.defaultDynamoDBObjectMapper()
     
+    /**
+     Get chatrooms which user is entering.
+     
+     - parameter user:       user
+     - parameter completion: callback
+     */
     func getChatRooms(user: AWSChatUser, completion: (([AWSChatRoom]?, ErrorType?) -> Void)?) {
         let query = AWSDynamoDBQueryExpression()
         query.indexName = "UserId-RoomId-index"
@@ -34,6 +42,14 @@ class ChatRoomsService {
             })
     }
     
+    /**
+     Create or enter new chat room.
+     
+     - parameter roomId:     room ID
+     - parameter roomName:   room Name (Not used yet)
+     - parameter user:       user who want to enter the room
+     - parameter completion: callback
+     */
     func createChatRoom(roomId: String, roomName: String, user: AWSChatUser, completion: ((AWSChatRoom?, ErrorType?) -> Void)?) {
         let dynamoRoom = AWSChatRoom()
         dynamoRoom.RoomId = roomId
@@ -51,6 +67,12 @@ class ChatRoomsService {
             })
     }
     
+    /**
+     Go out from chat room.
+     
+     - parameter room:       room which uer want to go out
+     - parameter completion: callback
+     */
     func deleteChatRoom(room: AWSChatRoom, completion: ((ErrorType?) -> Void)?) {
         dynamoDBObjectMapper.remove(room)
             .continueWithExecutor(AWSExecutor.mainThreadExecutor(), withBlock: { (task) -> AnyObject! in

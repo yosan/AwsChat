@@ -135,7 +135,7 @@ private extension ChatViewController {
         
         let lastMessageId = messages.last?.MessageId as String?
         
-        messagesService.getMessages(user: user, room: room, lastMessageId: lastMessageId, completion: { (newMessages, error) in
+        messagesService.getMessages(room: room, lastMessageId: lastMessageId, completion: { (newMessages, error) in
             if let error = error {
                 print(error)
                 return

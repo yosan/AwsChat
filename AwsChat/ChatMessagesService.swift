@@ -9,10 +9,20 @@
 import Foundation
 import AWSDynamoDB
 
+/// Service of chat messages
 class ChatMessagesService {
     
+    /// Object Mapper
     private lazy var dynamoDBObjectMapper = AWSDynamoDBObjectMapper.defaultDynamoDBObjectMapper()
     
+    /**
+     Send message
+     
+     - parameter text:       message text
+     - parameter user:       user who wants to send the message
+     - parameter room:       room to post message
+     - parameter completion: callback
+     */
     func sendMessage(text text: String, user: AWSChatUser, room: AWSChatRoom, completion: ((ErrorType?) -> Void)?) {
         
         let dynamoMessage = AWSChatMessage()
@@ -40,7 +50,14 @@ class ChatMessagesService {
             })
     }
     
-    func getMessages(user user: AWSChatUser, room: AWSChatRoom, lastMessageId: String?, completion: (([AWSChatMessage]?, ErrorType?) -> Void)?) {
+    /**
+     Get message
+     
+     - parameter room:          room in which message exits
+     - parameter lastMessageId: last message ID which the app already known. If it's nil, latest 10 messages are fetched.
+     - parameter completion:    callback
+     */
+    func getMessages(room room: AWSChatRoom, lastMessageId: String?, completion: (([AWSChatMessage]?, ErrorType?) -> Void)?) {
         let query = AWSDynamoDBQueryExpression()
         
         query.keyConditionExpression = "RoomId = :roomId and MessageId > :messageId"
@@ -67,6 +84,12 @@ class ChatMessagesService {
             })
     }
     
+    /**
+     Get user data
+     
+     - parameter userIds:    user IDs to get data
+     - parameter completion: callback
+     */
     func getUsers(userIds: [String], completion: (([AWSChatUser]?, ErrorType?) -> Void)?) {
         let tasks = userIds.map { userId -> AWSTask in
             return dynamoDBObjectMapper.load(AWSChatUser.self, hashKey: userId, rangeKey: nil)

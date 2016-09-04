@@ -11,6 +11,7 @@ import AWSCognito
 import AWSDynamoDB
 import AWSSNS
 
+/// Service of login
 class LoginService {
     
     /// DynamoDB object mapper
@@ -19,6 +20,7 @@ class LoginService {
     // SNS Platform Apllication Arn
     private let platformApplicationArn = "arn:aws:sns:<REGION>:<ID>:app/APNS_SANDBOX/AwsChat"
     
+    // Cognito Identity Pool ID
     private let identityPoolId = "<REGION>:<ID>"
 
     /// Login Provider to pass FB credentials to AWS SDK

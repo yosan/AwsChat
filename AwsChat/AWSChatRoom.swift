@@ -9,6 +9,7 @@
 import Foundation
 import AWSDynamoDB
 
+/// DynamoDB Object for AWSChatRooms
 class AWSChatRoom: AWSDynamoDBObjectModel, AWSDynamoDBModeling {
     
     var RoomId: NSString = ""
