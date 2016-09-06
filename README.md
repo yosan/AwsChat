@@ -3,6 +3,7 @@
 ### Please input these parameters.
 
 * Info.plit - FacebookAppID
+* Info.plit - FacebookAppURLScheme
 * LoginService.swift - platformApplicationArn
 * LoginService.swift - identityPoolId
 
