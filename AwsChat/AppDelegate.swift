@@ -50,6 +50,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      */
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
         print("error: \(error.code), \(error.description)")
+        
+        // Simulate device token is received for iOS Simulator.
+        if TARGET_OS_SIMULATOR != 0 {
+            let dummy = "0000000000000000000000000000000000000000000000000000000000000000"
+            let notification = NSNotification(name: "DeviceTokenUpdated", object: self, userInfo: ["token" : dummy])
+            NSNotificationCenter.defaultCenter().postNotification(notification)
+        }
     }
     
     /**

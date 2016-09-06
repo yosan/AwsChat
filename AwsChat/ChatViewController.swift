@@ -60,6 +60,9 @@ class ChatViewController: JSQMessagesViewController {
         // Initialize avator
         incomingAvator = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(named: "IncomingAvatar"), diameter: 64)
         
+        // Remove attachment button
+        inputToolbar.contentView.leftBarButtonItem = nil
+        
         // Fetch messages from server
         reloadMessages()
         
