@@ -13,7 +13,7 @@ import AWSDynamoDB
 class ChatRoomsService {
     
     /// Object Mapper
-    private lazy var dynamoDBObjectMapper = AWSDynamoDBObjectMapper.defaultDynamoDBObjectMapper()
+    fileprivate lazy var dynamoDBObjectMapper = AWSDynamoDBObjectMapper.default()
     
     /**
      Get chatrooms which user is entering.
@@ -21,21 +21,19 @@ class ChatRoomsService {
      - parameter user:       user
      - parameter completion: callback
      */
-    func getChatRooms(user: AWSChatUser, completion: (([AWSChatRoom]?, ErrorType?) -> Void)?) {
+    func getChatRooms(_ user: AWSChatUser, completion: (([AWSChatRoom]?, Error?) -> Void)?) {
         let query = AWSDynamoDBQueryExpression()
         query.indexName = "UserId-RoomId-index"
         query.keyConditionExpression = "UserId = :val"
         query.expressionAttributeValues = [":val" : user.UserId]
         dynamoDBObjectMapper.query(AWSChatRoom.self, expression: query)
-            .continueWithExecutor(AWSExecutor.mainThreadExecutor(), withBlock: { task -> AnyObject! in
+            .continue(with: AWSExecutor.mainThread(), with: { task -> AnyObject! in
                 if let error = task.error {
                     completion?(nil, error)
                     return nil
                 }
                 
-                guard
-                    let paginatedOutput = task.result as? AWSDynamoDBPaginatedOutput,
-                    let rooms = paginatedOutput.items as? [AWSChatRoom] else { fatalError() }
+                guard let rooms = task.result?.items as? [AWSChatRoom] else { fatalError() }
                 
                 completion?(rooms, nil)
                 return nil
@@ -50,13 +48,13 @@ class ChatRoomsService {
      - parameter user:       user who want to enter the room
      - parameter completion: callback
      */
-    func createChatRoom(roomId: String, roomName: String, user: AWSChatUser, completion: ((AWSChatRoom?, ErrorType?) -> Void)?) {
+    func createChatRoom(_ roomId: String, roomName: String, user: AWSChatUser, completion: ((AWSChatRoom?, Error?) -> Void)?) {
         let dynamoRoom = AWSChatRoom()
-        dynamoRoom.RoomId = roomId
-        dynamoRoom.RoomName = roomName
-        dynamoRoom.UserId = user.UserId
-        dynamoDBObjectMapper.save(dynamoRoom)
-            .continueWithExecutor(AWSExecutor.mainThreadExecutor(), withBlock: { (task) -> AnyObject! in
+        dynamoRoom?.RoomId = roomId as NSString
+        dynamoRoom?.RoomName = roomName as NSString
+        dynamoRoom?.UserId = user.UserId
+        dynamoDBObjectMapper.save(dynamoRoom!)
+            .continue(with: AWSExecutor.mainThread(), with: { (task) -> AnyObject! in
                 if let error = task.error {
                     completion?(nil, error)
                     return nil
@@ -73,9 +71,9 @@ class ChatRoomsService {
      - parameter room:       room which uer want to go out
      - parameter completion: callback
      */
-    func deleteChatRoom(room: AWSChatRoom, completion: ((ErrorType?) -> Void)?) {
+    func deleteChatRoom(_ room: AWSChatRoom, completion: ((Error?) -> Void)?) {
         dynamoDBObjectMapper.remove(room)
-            .continueWithExecutor(AWSExecutor.mainThreadExecutor(), withBlock: { (task) -> AnyObject! in
+            .continue(with: AWSExecutor.mainThread(), with: { (task) -> AnyObject! in
                 completion?(task.error)
                 return nil
             })

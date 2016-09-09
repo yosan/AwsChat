@@ -13,7 +13,7 @@ import AWSDynamoDB
 class ChatMessagesService {
     
     /// Object Mapper
-    private lazy var dynamoDBObjectMapper = AWSDynamoDBObjectMapper.defaultDynamoDBObjectMapper()
+    fileprivate lazy var dynamoDBObjectMapper = AWSDynamoDBObjectMapper.default()
     
     /**
      Send message
@@ -23,18 +23,18 @@ class ChatMessagesService {
      - parameter room:       room to post message
      - parameter completion: callback
      */
-    func sendMessage(text text: String, user: AWSChatUser, room: AWSChatRoom, completion: ((ErrorType?) -> Void)?) {
+    func sendMessage(text: String, user: AWSChatUser, room: AWSChatRoom, completion: ((Error?) -> Void)?) {
         
         let dynamoMessage = AWSChatMessage()
-        let date = NSDate()
+        let date = Date()
         let messageId = Int(date.timeIntervalSince1970 * 1000)
-        dynamoMessage.MessageId = "\(messageId)"
-        dynamoMessage.RoomId = room.RoomId
-        dynamoMessage.UserId = user.UserId
-        dynamoMessage.Text = text
-        dynamoMessage.Time = date.timeIntervalSince1970
-        dynamoDBObjectMapper.save(dynamoMessage)
-            .continueWithExecutor(AWSExecutor.mainThreadExecutor(), withBlock: {(task) -> AnyObject? in
+        dynamoMessage?.MessageId = "\(messageId)" as NSString
+        dynamoMessage?.RoomId = room.RoomId
+        dynamoMessage?.UserId = user.UserId
+        dynamoMessage?.Text = text as NSString
+        dynamoMessage?.Time = NSNumber(value: date.timeIntervalSince1970)
+        dynamoDBObjectMapper.save(dynamoMessage!)
+            .continue(with: AWSExecutor.mainThread(), with: {(task) -> AnyObject? in
                 if let error = task.error {
                     print(error)
                     completion?(error)
@@ -57,7 +57,7 @@ class ChatMessagesService {
      - parameter lastMessageId: last message ID which the app already known. If it's nil, latest 10 messages are fetched.
      - parameter completion:    callback
      */
-    func getMessages(room room: AWSChatRoom, lastMessageId: String?, completion: (([AWSChatMessage]?, ErrorType?) -> Void)?) {
+    func getMessages(room: AWSChatRoom, lastMessageId: String?, completion: (([AWSChatMessage]?, Error?) -> Void)?) {
         let query = AWSDynamoDBQueryExpression()
         
         query.keyConditionExpression = "RoomId = :roomId and MessageId > :messageId"
@@ -68,18 +68,16 @@ class ChatMessagesService {
         query.scanIndexForward = false
         
         dynamoDBObjectMapper.query(AWSChatMessage.self, expression: query)
-            .continueWithExecutor(AWSExecutor.mainThreadExecutor(), withBlock: { task -> AnyObject! in
+            .continue(with: AWSExecutor.mainThread(), with: { task -> AnyObject! in
                 if let error = task.error {
                     completion?(nil, error)
                     return nil
                 }
                 
-                guard
-                    let paginatedOutput = task.result as? AWSDynamoDBPaginatedOutput,
-                    let messages = paginatedOutput.items as? [AWSChatMessage] else { fatalError() }
+                guard let messages = task.result?.items as? [AWSChatMessage] else { fatalError() }
                 
                 // Reverse messages
-                completion?(messages.reverse(), nil)
+                completion?(messages.reversed(), nil)
                 return nil
             })
     }
@@ -90,11 +88,11 @@ class ChatMessagesService {
      - parameter userIds:    user IDs to get data
      - parameter completion: callback
      */
-    func getUsers(userIds: [String], completion: (([AWSChatUser]?, ErrorType?) -> Void)?) {
-        let tasks = userIds.map { userId -> AWSTask in
+    func getUsers(_ userIds: [String], completion: (([AWSChatUser]?, Error?) -> Void)?) {
+        let tasks = userIds.map { userId -> AWSTask<AnyObject> in
             return dynamoDBObjectMapper.load(AWSChatUser.self, hashKey: userId, rangeKey: nil)
         }
-        AWSTask(forCompletionOfAllTasksWithResults: tasks).continueWithExecutor(AWSExecutor.mainThreadExecutor(), withBlock: { (task) -> AnyObject? in
+        AWSTask<NSArray>(forCompletionOfAllTasksWithResults: tasks).continue(with: AWSExecutor.mainThread(), with: { (task) -> Any? in
             if let error = task.error {
                 completion?(nil, error)
                 return nil

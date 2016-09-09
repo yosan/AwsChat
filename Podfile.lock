@@ -1,12 +1,12 @@
 PODS:
-  - AWSCognito (2.4.3):
-    - AWSCore (= 2.4.3)
-  - AWSCore (2.4.3)
-  - AWSDynamoDB (2.4.3):
-    - AWSCore (= 2.4.3)
-  - AWSSNS (2.4.3):
-    - AWSCore (= 2.4.3)
-  - JSQMessagesViewController (7.3.1):
+  - AWSCognito (2.4.7):
+    - AWSCore (= 2.4.7)
+  - AWSCore (2.4.7)
+  - AWSDynamoDB (2.4.7):
+    - AWSCore (= 2.4.7)
+  - AWSSNS (2.4.7):
+    - AWSCore (= 2.4.7)
+  - JSQMessagesViewController (7.3.4):
     - JSQSystemSoundPlayer (~> 2.0.1)
   - JSQSystemSoundPlayer (2.0.1)
 
@@ -17,11 +17,11 @@ DEPENDENCIES:
   - JSQMessagesViewController
 
 SPEC CHECKSUMS:
-  AWSCognito: 9a83fcecccd8b9efaa82fec7722ee2a4c723b0fe
-  AWSCore: 1b1edbf65f948804c9d522f1c49e29f51f72c6d8
-  AWSDynamoDB: 50d4c3abc823f93b0cdc16ca5041996b9294d057
-  AWSSNS: 4dde743fe01ad3f1581bb1005dbb7fb59b518c1e
-  JSQMessagesViewController: 3847120a97a7ab3bdc701f166c59f3955f7801c7
+  AWSCognito: 6aa404f15d1eb2b4b51f45322a409257b3248e79
+  AWSCore: 9a729a3c0050a51ece3547d546c327acdac7838a
+  AWSDynamoDB: 95c8d325fad2bea4d4ca70576876d9893d9dedd3
+  AWSSNS: 45b3a02693808251ed388afcab0e90ec05b53f72
+  JSQMessagesViewController: 39fed975e3c9f8eba7292071e29eeb541d105e66
   JSQSystemSoundPlayer: c5850e77a4363ffd374cd851154b9af93264ed8d
 
 PODFILE CHECKSUM: 4203e5cf5ecf5ca2cf67ee381610eea2c4d24dfd

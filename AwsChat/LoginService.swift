@@ -15,27 +15,27 @@ import AWSSNS
 class LoginService {
     
     /// DynamoDB object mapper
-    private lazy var dynamoDBObjectMapper = AWSDynamoDBObjectMapper.defaultDynamoDBObjectMapper()
+    fileprivate lazy var dynamoDBObjectMapper = AWSDynamoDBObjectMapper.default()
 
     // SNS Platform Apllication Arn
-    private let platformApplicationArn = "arn:aws:sns:<REGION>:<ID>:app/APNS_SANDBOX/AwsChat"
+    fileprivate let platformApplicationArn = "arn:aws:sns:<REGION>:<ID>:app/APNS_SANDBOX/AwsChat"
     
     // Cognito Identity Pool ID
-    private let identityPoolId = "<REGION>:<ID>"
+    fileprivate let identityPoolId = "<REGION>:<ID>"
 
     /// Login Provider to pass FB credentials to AWS SDK
     class AWSChatLoginProvider: NSObject, AWSIdentityProviderManager {
         
-        private let token: String?
+        fileprivate let token: String?
         
         init(token: String) {
             self.token = token
         }
         
-        func logins() -> AWSTask {
+        public func logins() -> AWSTask<NSDictionary> {
             guard let token = token else { fatalError() }
             let providers = [AWSIdentityProviderFacebook : token]
-            return AWSTask(result: providers as AnyObject)
+            return AWSTask(result: providers as NSDictionary)
         }
     }
     
@@ -47,37 +47,37 @@ class LoginService {
      - parameter imageUrl:   user icon image url
      - parameter completion: callback
      */
-    func login(token: String, name: String, imageUrl: NSURL?, deviceToken: String, completion: ((user: AWSChatUser?, error: ErrorType?) -> Void)?) {
+    func login(_ token: String, name: String, imageUrl: URL?, deviceToken: String, completion: ((_ user: AWSChatUser?, _ error: Error?) -> Void)?) {
         let providerManager = AWSChatLoginProvider(token: token)
-        let credentialsProvider = AWSCognitoCredentialsProvider(regionType:.APNortheast1,
+        let credentialsProvider = AWSCognitoCredentialsProvider(regionType:.apNortheast1,
                                                                 identityPoolId:identityPoolId,
                                                                 identityProviderManager: providerManager)
-        let configuration = AWSServiceConfiguration(region:.APNortheast1, credentialsProvider:credentialsProvider)
-        AWSServiceManager.defaultServiceManager().defaultServiceConfiguration = configuration
+        let configuration = AWSServiceConfiguration(region:.apNortheast1, credentialsProvider:credentialsProvider)
+        AWSServiceManager.default().defaultServiceConfiguration = configuration
         
         // Login
         let request = AWSSNSCreatePlatformEndpointInput()
-        request.token = deviceToken
-        request.platformApplicationArn = platformApplicationArn
+        request?.token = deviceToken
+        request?.platformApplicationArn = platformApplicationArn
         
         var dynamoUser: AWSChatUser?
-        AWSSNS.defaultSNS().createPlatformEndpoint(request)
-            .continueWithSuccessBlock({ (task: AWSTask!) -> AnyObject! in
+        AWSSNS.default().createPlatformEndpoint(request!)
+            .continue(successBlock: { (task: AWSTask!) -> AnyObject! in
                 // FIXME: endpointArn unwrapping
                 guard let cognitoId = credentialsProvider.identityId, let endpointArn = task.result?.endpointArn! else { fatalError() }
                 let user = AWSChatUser()
-                user.UserId = cognitoId
-                user.UserName = name
-                user.ImageUrl = imageUrl?.absoluteString ?? ""
-                user.EndpointArn = endpointArn
+                user?.UserId = cognitoId as NSString
+                user?.UserName = name as NSString
+                user?.ImageUrl = imageUrl?.absoluteString as NSString? ?? ""
+                user?.EndpointArn = endpointArn as NSString
                 dynamoUser = user
-                return self.dynamoDBObjectMapper.save(user)
+                return self.dynamoDBObjectMapper.save(user!)
             })
-            .continueWithExecutor(AWSExecutor.mainThreadExecutor(), withBlock: { (task: AWSTask!) -> AnyObject! in
+            .continue(with: AWSExecutor.mainThread(), with: { (task: AWSTask!) -> AnyObject! in
                 if let error = task.error {
-                    completion?(user: nil, error: error)
+                    completion?(nil, error)
                 } else {
-                    completion?(user: dynamoUser, error: nil)
+                    completion?(dynamoUser, nil)
                 }
                 return nil
             })

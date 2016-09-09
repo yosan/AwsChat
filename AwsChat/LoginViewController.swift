@@ -24,10 +24,10 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     let segueIdentifier = "ChatRooms"
     
     /// Device Token
-    private var deviceToken: String?
+    fileprivate var deviceToken: String?
     
     /// Service for login
-    private let loginService = LoginService()
+    fileprivate let loginService = LoginService()
     
     /// Container to show icon.
     @IBOutlet weak var iconContainer: UIView!
@@ -37,17 +37,20 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     
     /// Login Provider to pass FB credentials to AWS SDK.
     class AWSChatLoginProvider: NSObject, AWSIdentityProviderManager {
-        func logins() -> AWSTask {
+        /**
+         Each entry in logins represents a single login with an identity provider. The key is the domain of the login provider (e.g. 'graph.facebook.com') and the value is the OAuth/OpenId Connect token that results from an authentication with that login provider.
+         */
+        public func logins() -> AWSTask<NSDictionary> {
             var providers = [String : String]()
-            if let fbtoken =  FBSDKAccessToken.currentAccessToken() {
+            if let fbtoken =  FBSDKAccessToken.current() {
                 providers[AWSIdentityProviderFacebook] = fbtoken.tokenString
             }
-            return AWSTask(result: providers as AnyObject)
+            return AWSTask<NSDictionary>(result: providers as NSDictionary)
         }
     }
         
     /// User
-    private var user: AWSChatUser?
+    fileprivate var user: AWSChatUser?
     
     // MARK: - ViewController Lifecycle
     override func viewDidLoad() {
@@ -63,13 +66,13 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
         let pictureView = FBSDKProfilePictureView(frame: pictureFrame)
         iconContainer.addSubview(pictureView)
         
-        startButton.enabled = false
+        startButton.isEnabled = false
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.onDeviceTokenUpdated(_:)), name: "DeviceTokenUpdated", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(LoginViewController.onDeviceTokenUpdated(_:)), name: NSNotification.Name(rawValue: "DeviceTokenUpdated"), object: nil)
         
         // Confirm notification permission
-        let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound,], categories: nil)
-        UIApplication.sharedApplication().registerUserNotificationSettings(settings)
+        let settings = UIUserNotificationSettings(types: [.alert, .badge, .sound,], categories: nil)
+        UIApplication.shared.registerUserNotificationSettings(settings)
     }
     
     /**
@@ -79,7 +82,7 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
      - parameter result:      result
      - parameter error:       error
      */
-    func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
+    func loginButton(_ loginButton: FBSDKLoginButton!, didCompleteWith result: FBSDKLoginManagerLoginResult!, error: Error!) {
         login(deviceToken)
     }
     
@@ -88,8 +91,8 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
      
      - parameter sender: sender
      */
-    @IBAction func onStartButtonClicked(sender: AnyObject) {
-        performSegueWithIdentifier(segueIdentifier, sender: self)
+    @IBAction func onStartButtonClicked(_ sender: AnyObject) {
+        performSegue(withIdentifier: segueIdentifier, sender: self)
     }
     
     /**
@@ -97,9 +100,9 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
      
      - parameter loginButton: button
      */
-    func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
-        dispatch_async(dispatch_get_main_queue(), {
-            self.startButton.enabled = false
+    func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
+        DispatchQueue.main.async(execute: {
+            self.startButton.isEnabled = false
         })
     }
     
@@ -109,9 +112,9 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
      - parameter segue:  segue
      - parameter sender: sender
      */
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        guard let identifier = segue.identifier where identifier == segueIdentifier else { return }
-        guard let chatRoomsVC = segue.destinationViewController as? ChatRoomsViewController else { return }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let identifier = segue.identifier , identifier == segueIdentifier else { return }
+        guard let chatRoomsVC = segue.destination as? ChatRoomsViewController else { return }
         guard let user = user else { return }
         chatRoomsVC.user = user
     }
@@ -122,8 +125,8 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
      - parameter notification: notification
      */
     @objc
-    func onDeviceTokenUpdated(notification: NSNotification?) {
-        guard let userInfo = notification?.userInfo else { return }
+    func onDeviceTokenUpdated(_ notification: Notification?) {
+        guard let userInfo = (notification as NSNotification?)?.userInfo else { return }
         if let deviceToken = userInfo["token"] as? String {
             self.deviceToken = deviceToken
         }
@@ -142,23 +145,21 @@ private extension LoginViewController {
      
      - parameter deviceToken: deviceToken
      */
-    func login(deviceToken: String?) {
+    func login(_ deviceToken: String?) {
         // Chack facebook token and device token.
-        guard
-            let fbtoken =  FBSDKAccessToken.currentAccessToken(),
-            let deviceToken = self.deviceToken else { return }
+        guard let fbtoken =  FBSDKAccessToken.current(), let deviceToken = self.deviceToken else { return }
         
         // Get icon URL and start login process.
-        FBSDKProfile.loadCurrentProfileWithCompletion { (profile, error) in
-            guard error == nil else {
+        FBSDKProfile.loadCurrentProfile { (profile, error) in
+            guard let name = profile?.name, error == nil else {
                 print(error)
                 return
             }
             
-            let imageUrl = profile.imageURLForPictureMode(FBSDKProfilePictureMode.Square, size: CGSize(width: 64, height: 64))
-            self.loginService.login(fbtoken.tokenString, name: profile.name, imageUrl: imageUrl, deviceToken: deviceToken) { (user, error) in
+            let imageUrl = profile?.imageURL(for: FBSDKProfilePictureMode.square, size: CGSize(width: 64, height: 64))
+            self.loginService.login(fbtoken.tokenString, name: name, imageUrl: imageUrl, deviceToken: deviceToken) { (user, error) in
                 self.user = user
-                self.startButton.enabled = true
+                self.startButton.isEnabled = true
             }
         }
     }

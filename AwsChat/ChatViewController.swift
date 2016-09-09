@@ -25,28 +25,28 @@ class ChatViewController: JSQMessagesViewController {
     var room: AWSChatRoom!
 
     /// Messages
-    private var messages = [AWSChatMessage]()
+    fileprivate var messages = [AWSChatMessage]()
     
     /// Chatting users
-    private var chattingUsers = [AWSChatUser]()
+    fileprivate var chattingUsers = [AWSChatUser]()
     
     /// Chatting user icons dictionary
-    private var iconDictionary = [String : JSQMessagesAvatarImage]()
+    fileprivate var iconDictionary = [String : JSQMessagesAvatarImage]()
     
     /// Bubble for not main users
-    private var incomingBubble: JSQMessagesBubbleImage!
+    fileprivate var incomingBubble: JSQMessagesBubbleImage!
     
     /// Bubble (plate of messages) for main user
-    private var outgoingBuggle: JSQMessagesBubbleImage!
+    fileprivate var outgoingBuggle: JSQMessagesBubbleImage!
     
     /// Default avator for not main users
-    private var incomingAvator: JSQMessagesAvatarImage!
+    fileprivate var incomingAvator: JSQMessagesAvatarImage!
     
     /// Main user's avator
-    private var outgoingAvator: JSQMessagesAvatarImage!
+    fileprivate var outgoingAvator: JSQMessagesAvatarImage!
     
     /// Service for message
-    private let messagesService = ChatMessagesService()
+    fileprivate let messagesService = ChatMessagesService()
     
     // MARK: - ViewController Lifecycle
     override func viewDidLoad() {
@@ -54,11 +54,11 @@ class ChatViewController: JSQMessagesViewController {
         
         // Initialize bubbles
         let bubbleFactory = JSQMessagesBubbleImageFactory()
-        incomingBubble = bubbleFactory.incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleBlueColor())
-        outgoingBuggle = bubbleFactory.outgoingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleGreenColor())
+        incomingBubble = bubbleFactory?.incomingMessagesBubbleImage(with: UIColor.jsq_messageBubbleBlue())
+        outgoingBuggle = bubbleFactory?.outgoingMessagesBubbleImage(with: UIColor.jsq_messageBubbleGreen())
         
         // Initialize avator
-        incomingAvator = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(named: "IncomingAvatar"), diameter: 64)
+        incomingAvator = JSQMessagesAvatarImageFactory.avatarImage(with: UIImage(named: "IncomingAvatar"), diameter: 64)
         
         // Remove attachment button
         inputToolbar.contentView.leftBarButtonItem = nil
@@ -67,40 +67,40 @@ class ChatViewController: JSQMessagesViewController {
         reloadMessages()
         
         // Start observation MessageUpdated event
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ChatViewController.onPushNotificationReceived(_:)), name: "MessageUpdated", object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ChatViewController.onPushNotificationReceived(_:)), name: NSNotification.Name(rawValue: "MessageUpdated"), object: nil)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         // Stop observation
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - JSQMessagesViewController
-    override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, messageDataForItemAt indexPath: IndexPath!) -> JSQMessageData! {
         let message = messages[indexPath.row]
         
         guard let user = chattingUsers.filter({$0.UserId == message.UserId}).first else { fatalError() }
         return JSQMessage(senderId: message.UserId as String, displayName: user.UserName as String, text: message.Text as String)
     }
     
-    override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return messages.count
     }
     
-    override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAt indexPath: IndexPath!) -> JSQMessageBubbleImageDataSource! {
         let message = messages[indexPath.row]
-        if message.UserId == senderId {
+        if message.UserId as String == senderId {
             return outgoingBuggle
         } else {
             return incomingBubble
         }
     }
     
-    override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
+    override func collectionView(_ collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAt indexPath: IndexPath!) -> JSQMessageAvatarImageDataSource! {
         let message = messages[indexPath.row]
-        if message.UserId == senderId {
+        if message.UserId as String == senderId {
             return outgoingAvator
         } else {
             
@@ -113,7 +113,7 @@ class ChatViewController: JSQMessagesViewController {
     }
     
     // MARK: - Event Listener
-    override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
+    override func didPressSend(_ button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: Date!) {
         
         JSQSystemSoundPlayer.jsq_playMessageSentAlert()
         
@@ -121,7 +121,7 @@ class ChatViewController: JSQMessagesViewController {
             if let error = error {
                 print(error)
             }
-            self.finishSendingMessageAnimated(true)
+            self.finishSendingMessage(animated: true)
             self.reloadMessages()
         }
     }
@@ -145,20 +145,20 @@ private extension ChatViewController {
             }
             
             guard let newMessages = newMessages else { fatalError() }
-            self.messages.appendContentsOf(newMessages)
+            self.messages.append(contentsOf: newMessages)
             
             let unknownUserIds = self.getUnknownUserIds(messages: newMessages, knownUsers: self.chattingUsers)
             self.messagesService.getUsers(unknownUserIds, completion: { (unknownUsers, error) in
                 guard let unknownUsers = unknownUsers else { return }
                 
-                self.chattingUsers.appendContentsOf(unknownUsers)
+                self.chattingUsers.append(contentsOf: unknownUsers)
                 
                 unknownUsers.forEach({ (unknownUser) in
-                    if let image = NSURL(string: unknownUser.ImageUrl as String).flatMap({NSData(contentsOfURL: $0)}).flatMap({UIImage(data: $0)}) {
-                        self.iconDictionary[unknownUser.UserId as String] = JSQMessagesAvatarImageFactory.avatarImageWithImage(image, diameter: 64)
+                    if let image = URL(string: unknownUser.ImageUrl as String).flatMap({(try? Data(contentsOf: $0))}).flatMap({UIImage(data: $0)}) {
+                        self.iconDictionary[unknownUser.UserId as String] = JSQMessagesAvatarImageFactory.avatarImage(with: image, diameter: 64)
                         
                         if unknownUser.UserId == self.user.UserId {
-                            self.outgoingAvator = JSQMessagesAvatarImageFactory.avatarImageWithImage(image, diameter: 64)
+                            self.outgoingAvator = JSQMessagesAvatarImageFactory.avatarImage(with: image, diameter: 64)
                         } else {
                             
                         }
@@ -178,12 +178,12 @@ private extension ChatViewController {
      
      - returns: user IDs
      */
-    func getUnknownUserIds(messages messages: [AWSChatMessage], knownUsers: [AWSChatUser]) -> [String] {
+    func getUnknownUserIds(messages: [AWSChatMessage], knownUsers: [AWSChatUser]) -> [String] {
         let knownUserIds = knownUsers.map { $0.UserId }
         let unknownUserIds = messages.reduce([]) { (acc, message) -> [String] in
             var acc = acc
             let userId = message.UserId as String
-            if !knownUserIds.contains(userId) && !acc.contains(userId) {
+            if !knownUserIds.contains(userId as NSString) && !acc.contains(userId) {
                 acc.append(message.UserId as String)
             }
             return acc
@@ -197,7 +197,7 @@ private extension ChatViewController {
      - parameter notification: notification
      */
     @objc
-    func onPushNotificationReceived(notification: NSNotification?) {
+    func onPushNotificationReceived(_ notification: Notification?) {
         reloadMessages()
     }
 }

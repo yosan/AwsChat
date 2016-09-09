@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         return true
     }
     
@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      - parameter application:          application
      - parameter notificationSettings: notificationSettings
      */
-    func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+    func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
         application.registerForRemoteNotifications()
     }
     
@@ -34,12 +34,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      - parameter application: application
      - parameter deviceToken: deviceToken
      */
-    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         let deviceTokenString = "\(deviceToken)"
-            .stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString:"<>"))
-            .stringByReplacingOccurrencesOfString(" ", withString: "")
-        let notification = NSNotification(name: "DeviceTokenUpdated", object: self, userInfo: ["token" : deviceTokenString])
-        NSNotificationCenter.defaultCenter().postNotification(notification)
+            .trimmingCharacters(in: CharacterSet(charactersIn:"<>"))
+            .replacingOccurrences(of: " ", with: "")
+        let notification = Notification(name: Notification.Name(rawValue: "DeviceTokenUpdated"), object: self, userInfo: ["token" : deviceTokenString])
+        NotificationCenter.default.post(notification)
     }
     
     /**
@@ -48,14 +48,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      - parameter application: application
      - parameter error:       error
      */
-    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        let error = error as NSError
         print("error: \(error.code), \(error.description)")
         
         // Simulate device token is received for iOS Simulator.
         if TARGET_OS_SIMULATOR != 0 {
             let dummy = "0000000000000000000000000000000000000000000000000000000000000000"
-            let notification = NSNotification(name: "DeviceTokenUpdated", object: self, userInfo: ["token" : dummy])
-            NSNotificationCenter.defaultCenter().postNotification(notification)
+            let notification = Notification(name: Notification.Name(rawValue: "DeviceTokenUpdated"), object: self, userInfo: ["token" : dummy])
+            NotificationCenter.default.post(notification)
         }
     }
     
@@ -65,10 +66,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      - parameter application: application
      - parameter userInfo:    userInfo
      */
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
         print(userInfo)
-        let notification = NSNotification(name: "MessageUpdated", object: self, userInfo: userInfo)
-        NSNotificationCenter.defaultCenter().postNotification(notification)
+        let notification = Notification(name: Notification.Name(rawValue: "MessageUpdated"), object: self, userInfo: userInfo)
+        NotificationCenter.default.post(notification)
     }
 
     /**
@@ -76,7 +77,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      
      - parameter application: application
      */
-    func applicationDidBecomeActive(application: UIApplication) {
+    func applicationDidBecomeActive(_ application: UIApplication) {
         FBSDKAppEvents.activateApp()
     }
 
@@ -90,9 +91,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      
      - returns: return value
      */
-    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
-        FBSDKProfile.enableUpdatesOnAccessTokenChange(true)
-        return FBSDKApplicationDelegate.sharedInstance().application(application, openURL: url, sourceApplication: sourceApplication, annotation: annotation)
+    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+        FBSDKProfile.enableUpdates(onAccessTokenChange: true)
+        return FBSDKApplicationDelegate.sharedInstance().application(application, open: url, sourceApplication: sourceApplication, annotation: annotation)
     }
 
 }
